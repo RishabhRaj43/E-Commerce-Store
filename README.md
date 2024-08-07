@@ -2,7 +2,7 @@
 
 Welcome to the **E-Commerce Store** project! This application is built using the MERN stack (MongoDB, Express.js, React.js, Node.js) and provides a comprehensive online shopping experience.
 
-![E-Commerce Store](link-to-screenshot.png) <!-- Add a screenshot or banner image of your project here -->
+<!-- ![E-Commerce Store](link-to-screenshot.png) Add a screenshot or banner image of your project here -->
 
 ## Features
 
