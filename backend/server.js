@@ -1,9 +1,15 @@
+//packages
+import path from "path";
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
-import newConnect from "./MongoDb/connect.mongo.js";
-import insert from "./routes/insert.js";
+//utils
+import connectDB from "./config/db.js";
+
+//routes
+import userRoutes from "./routes/userRoutes.js";
 
 dotenv.config();
 
@@ -11,12 +17,14 @@ const app = express();
 
 // Middleware setup
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors());
-
-newConnect();
+app.use(cookieParser());
+connectDB();
 
 // Routes
-app.use("/api",insert)
+app.use("/api/users",userRoutes)
+
 
 const port = process.env.PORT || 3000;
 
