@@ -85,7 +85,6 @@ const updateCurrentUserProfile = asyncHandler(async (req, res) => {
 
   const user = await User.findById(req.user._id);
   console.log(user);
-  
 
   if (!user) {
     throw new Error("User not found");
@@ -104,6 +103,53 @@ const updateCurrentUserProfile = asyncHandler(async (req, res) => {
   res.status(200).json("User updated");
 });
 
+const deleteUserById = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+  console.log(user);
+
+  if (user) {
+    if (user.isAdmin) {
+      throw new Error("Cannot delete admin");
+    }
+  }
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  await User.deleteOne({ _id: user._id });
+
+  res.json("User Removed");
+});
+
+const getUserById = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id).select("-password");
+  if (!user) {
+    throw new Error("User not found");
+  }
+  res.status(200).json(user);
+});
+
+const updateUserById = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  user.username = req.body.username || user.username;
+  user.email = req.body.email || user.email;
+  user.isAdmin = Boolean(req.body.isAdmin);
+  if (req.body.password) {
+    const salt = await bcrypt.genSalt(8);
+    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+    user.password = hashedPassword;
+  }
+
+  await user.save();
+
+  res.status(200).json("User updated");
+})
+
 export {
   createUser,
   loginUser,
@@ -111,4 +157,7 @@ export {
   getAllUsers,
   getCurrentUserProfile,
   updateCurrentUserProfile,
+  deleteUserById,
+  getUserById,
+  updateUserById
 };
